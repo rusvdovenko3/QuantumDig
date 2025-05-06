@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Quantum Dig</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #111;
+      color: #0f0;
+      font-family: monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    #balance {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+    button {
+      background: #0f0;
+      color: #111;
+      font-size: 18px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0c0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quantum Dig</h1>
+  <div id="balance">Баланс: 0.00000000 XRP</div>
+  <button onclick="mine()">⛏️ Майнить</button>
+
+  <script>
+    const balanceKey = "quantum_balance";
+    let balance = parseFloat(localStorage.getItem(balanceKey)) || 0.000001;
+
+    function updateDisplay() {
+      document.getElementById("balance").innerText = `Баланс: ${balance.toFixed(8)} XRP`;
+    }
+
+    function mine() {
+      balance += 0.00001;
+      localStorage.setItem(balanceKey, balance);
+      updateDisplay();
+
+      if (window.Telegram.WebApp) {
+        Telegram.WebApp.sendData(JSON.stringify({ balance: balance.toFixed(8) }));
+      }
+    }
+
+    if (window.Telegram.WebApp) {
+      Telegram.WebApp.ready();
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
